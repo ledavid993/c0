@@ -27,6 +27,5 @@ require("./routes/authRoutes")(app);
 require("./routes/authorRoutes")(app);
 require("./routes/novelRoutes")(app);
 
-app.listen(8080, () => {
-    console.log("app is running on port 8080");
-});
+const PORT = process.env.PORT || 8080;
+app.listen(PORT)
