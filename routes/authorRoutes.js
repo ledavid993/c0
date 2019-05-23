@@ -15,7 +15,9 @@ module.exports = app => {
     app.get("/author/:id", async (req, res) => {
         try {
             let user = await User.findOne({ googleID: req.params.id });
-            let novels = await Novel.find({ _user: user._id }).sort({"dateUpdated": -1});
+            let novels = await Novel.find({ _user: user._id }).sort({
+                dateUpdated: -1
+            });
             res.send(novels);
         } catch (err) {
             res.status(401).send(err);
@@ -30,7 +32,7 @@ module.exports = app => {
             synopsis,
             _user: req.user.id,
             dateCreated: Date.now(),
-            dateUpdated: Date.now(),
+            dateUpdated: Date.now()
         });
 
         try {
@@ -44,7 +46,9 @@ module.exports = app => {
     app.get("/author/novel/:novelId", async (req, res) => {
         try {
             let novel = await Novel.findOne({ _id: req.params.novelId });
-            let chapters = await Chapter.find({ _novel: novel }).sort({"date": -1});
+            let chapters = await Chapter.find({ _novel: novel }).sort({
+                date: -1
+            });
             novel = {
                 ...novel._doc
             };
@@ -57,18 +61,26 @@ module.exports = app => {
 
     app.post("/author/novel/:novelId/add", requireLogin, async (req, res) => {
         const { title, passage } = req.body;
-
-        const chapters = await Chapter.find({_novel: req.params.novelId})
-
-        const chapter = new Chapter({
-            No: chapters.length,
-            title,
-            passage,
-            _novel: req.params.novelId,
-            date: Date.now()
-        });
-
         try {
+            const chapters = await Chapter.find({ _novel: req.params.novelId });
+
+            const chapter = new Chapter({
+                No: chapters.length + 1,
+                title,
+                passage,
+                _novel: req.params.novelId,
+                date: Date.now()
+            });
+
+            const novel = await Novel.updateOne(
+                { _id: req.params.novelId },
+                {
+                    $set: {
+                        dateUpdated: Date.now()
+                    }
+                }
+            );
+
             await chapter.save();
             res.send(chapter);
         } catch (err) {}
