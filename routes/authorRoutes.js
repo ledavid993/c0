@@ -25,11 +25,13 @@ module.exports = app => {
     });
 
     app.post("/author/:id/create", requireLogin, async (req, res) => {
-        const { title, synopsis } = req.body;
+        const { title, synopsis, image } = req.body;
 
         const novel = new Novel({
             title,
             synopsis,
+            image,
+            authorName: req.user.authorName,
             _user: req.user.id,
             dateCreated: Date.now(),
             dateUpdated: Date.now()
@@ -72,7 +74,7 @@ module.exports = app => {
                 date: Date.now()
             });
 
-            const novel = await Novel.updateOne(
+            await Novel.updateOne(
                 { _id: req.params.novelId },
                 {
                     $set: {
