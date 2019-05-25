@@ -25,6 +25,16 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use( function(req, res, next) {
+
+    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
+      return res.sendStatus(204);
+    }
+  
+    return next();
+  
+  });
+
 require("./routes/authRoutes")(app);
 require("./routes/authorRoutes")(app);
 require("./routes/novelRoutes")(app);
