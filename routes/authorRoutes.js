@@ -6,13 +6,13 @@ const requireLogin = require("../middlewares/requireLogin");
 const Novel = mongoose.model("novels");
 const Chapter = mongoose.model("chapters");
 module.exports = app => {
-    app.get("/author", async (req, res) => {
+    app.get("/api/author", async (req, res) => {
         try {
             let user = await User.find();
             res.send(user);
         } catch (err) {}
     });
-    app.get("/author/:id", async (req, res) => {
+    app.get("/api/author/:id", async (req, res) => {
         try {
             let user = await User.findOne({ googleID: req.params.id });
             let novels = await Novel.find({ _user: user._id }).sort({
@@ -24,7 +24,7 @@ module.exports = app => {
         }
     });
 
-    app.post("/author/:id/create", requireLogin, async (req, res) => {
+    app.post("/api/author/:id/create", requireLogin, async (req, res) => {
         const { title, synopsis, image } = req.body;
 
         const novel = new Novel({
@@ -45,7 +45,7 @@ module.exports = app => {
         }
     });
 
-    app.get("/author/novel/:novelId", async (req, res) => {
+    app.get("/api/author/novel/:novelId", async (req, res) => {
         try {
             let novel = await Novel.findOne({ _id: req.params.novelId });
             let chapters = await Chapter.find({ _novel: novel }).sort({
@@ -61,7 +61,7 @@ module.exports = app => {
         } catch (err) {}
     });
 
-    app.post("/author/novel/:novelId/add", requireLogin, async (req, res) => {
+    app.post("/api/author/novel/:novelId/add", requireLogin, async (req, res) => {
         const { title, passage } = req.body;
         try {
             const chapters = await Chapter.find({ _novel: req.params.novelId });

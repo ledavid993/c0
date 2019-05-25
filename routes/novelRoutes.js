@@ -4,7 +4,7 @@ const Novel = mongoose.model("novels");
 const Chapter = mongoose.model("chapters");
 
 module.exports = app => {
-    app.get("/novels", async (req, res) => {
+    app.get("/api/novels", async (req, res) => {
         let novel = await Novel.find()
             .sort({ dateUpdated: -1 })
             .limit(15);
@@ -12,7 +12,7 @@ module.exports = app => {
         let novelPromises = novel.map(async novel => {
             let chapters = await Chapter.find({ _novel: novel })
                 .sort({ date: -1 })
-                .limit(3);
+                .limit(2);
 
             let oldNovelState = {
                 ...novel._doc
@@ -29,7 +29,7 @@ module.exports = app => {
         });
     });
 
-    app.get("/novels/:title", async (req, res) => {
+    app.get("/api/novels/:title", async (req, res) => {
         try {
             let novelTitleURI = decodeURIComponent(req.params.title);
             let novel = await Novel.findOne({ title: novelTitleURI });
@@ -46,4 +46,17 @@ module.exports = app => {
             res.status(401).send(err);
         }
     });
+
+    app.get("/api/novels/:title/:chapterNo", async (req,res) => {
+        try{
+            let novelTitleURI = decodeURIComponent(req.params.title);
+            let novel = await Novel.findOne({ title: novelTitleURI });
+            if(novel){
+                let chapter = await Chapter.findOne({_novel: novel, No: req.params.chapterNo})
+                if(chapter){
+                    res.send(chapter)
+                }
+            }
+        }catch(err){}
+    })
 };
