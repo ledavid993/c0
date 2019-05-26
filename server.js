@@ -32,7 +32,7 @@ require("./routes/authRoutes")(app);
 require("./routes/authorRoutes")(app);
 require("./routes/novelRoutes")(app);
 
-app.get("../public/favicon.ico", (req, res) => res.status(204));
+app.get("./public/favicon.ico", (req, res) => res.status(204));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT);
