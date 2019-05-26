@@ -4,16 +4,19 @@ const keys = require("./config/keys");
 const passport = require("passport");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cors = require('cors')
+const cors = require("cors");
+const favicon = require("serve-favicon");
+
 require("./models/User");
 require("./models/Novel");
-require("./models/Chapter")
+require("./models/Chapter");
 require("./services/passport");
 
 mongoose.connect(keys.mongoURI);
 const app = express();
 
-app.use(cors())
+app.use(cors());
+app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 app.use(bodyParser.json());
 app.use(
     cookieSession({
@@ -29,5 +32,7 @@ require("./routes/authRoutes")(app);
 require("./routes/authorRoutes")(app);
 require("./routes/novelRoutes")(app);
 
+app.get("../public/favicon.ico", (req, res) => res.status(204));
+
 const PORT = process.env.PORT || 8080;
-app.listen(PORT)
+app.listen(PORT);
