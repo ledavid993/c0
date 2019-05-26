@@ -16,8 +16,7 @@ require("./services/passport");
 mongoose.connect(keys.mongoURI);
 const app = express();
 
-app.use(cors());
-app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+
 app.use(bodyParser.json());
 app.use(
     cookieSession({
@@ -26,6 +25,7 @@ app.use(
     })
 );
 
+app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
 
