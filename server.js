@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const favicon = require("serve-favicon");
+const path = require("path");
 
 require("./models/User");
 require("./models/Novel");
