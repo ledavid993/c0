@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
-const User = mongoose.model("users");
-const requireLogin = require("../middlewares/requireLogin");
 
 const Novel = mongoose.model("novels");
 const Chapter = mongoose.model("chapters");
@@ -24,7 +21,7 @@ module.exports = app => {
         }
     });
 
-    app.post("/api/author/:id/create", requireLogin, async (req, res) => {
+    app.post("/api/author/:id/create", async (req, res) => {
         const { title, synopsis, image } = req.body;
 
         const novel = new Novel({
@@ -61,7 +58,7 @@ module.exports = app => {
         } catch (err) {}
     });
 
-    app.post("/api/author/novel/:novelId/add", requireLogin, async (req, res) => {
+    app.post("/api/author/novel/:novelId/add", async (req, res) => {
         const { title, passage } = req.body;
         try {
             const chapters = await Chapter.find({ _novel: req.params.novelId });

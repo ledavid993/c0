@@ -1,13 +1,23 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const chapterSchema = new Schema({
-    No: { type: Number, default: 0},
-    title: String,
-    passage: String,
-    date: Date,
+const Chapter = mongoose.model("Chapter", {
+    no: { type: Number, default: 0 },
+    title: {
+        type: String,
+        required: true
+    },
+    passage: {
+        type: String,
+        required: true
+    },
+    dateCreated: Date,
     likes: { type: Number, default: 0 },
-    _novel: { type: Schema.Types.ObjectId, ref: "Novel" }
+    novel: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "Novel"
+    }
 });
 
-mongoose.model( "chapters", chapterSchema);
+module.exports = Chapter;
