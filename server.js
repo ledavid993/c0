@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 
 require("./routes/authRoutes")(app);
 require("./routes/profileRoutes")(app);
+require("./routes/novelRoutes")(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT);

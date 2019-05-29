@@ -1,9 +1,14 @@
 const User = require("../models/User");
-const auth = require("../middlewares/auth")
+const auth = require("../middlewares/auth");
 
 module.exports = app => {
     app.post("/register", async (req, res) => {
-        const user = new User(req.body);
+        console.log(req.body.username);
+        const user = new User({
+            username: req.body.username,
+            password: req.body.password,
+            email: req.body.email
+        });
 
         try {
             await user.save();
@@ -21,7 +26,7 @@ module.exports = app => {
                 req.body.password
             );
             const token = await user.generateAuthToken();
-            res.send({user, token})
+            res.send({ user, token });
         } catch (e) {
             res.status(400).send();
         }
@@ -32,8 +37,8 @@ module.exports = app => {
             req.user.tokens = req.user.tokens.filter(tokens => {
                 return tokens.token !== req.token;
             });
-            await req.user.save()
-            res.send()
+            await req.user.save();
+            res.send();
         } catch (err) {
             res.status(500).send();
         }

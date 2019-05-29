@@ -1,6 +1,6 @@
 const auth = require("../middlewares/auth");
 const Novel = require("../models/Novel");
-const Chapter = require("../models/Chapter")
+const Chapter = require("../models/Chapter");
 
 module.exports = app => {
     app.get("/profile", auth, async (req, res) => {
@@ -10,16 +10,18 @@ module.exports = app => {
     app.post("/profile/novels", auth, async (req, res) => {
         const novel = new Novel({
             ...req.body,
-            author: req.user._id
-        })
+            author: req.user._id,
+            dateCreated: Date.now(),
+            dateUpdated: Date.now()
+        });
 
-        try{
+        try {
             await novel.save();
             res.status(201).send(novel);
-        }catch(err){
-            res.status(400).send(err)
+        } catch (err) {
+            res.status(400).send(err);
         }
-    })
+    });
 
     app.get("/profile/novels", auth, async (req, res) => {
         try {
@@ -30,41 +32,41 @@ module.exports = app => {
         }
     });
 
-    app.get('/profile/novels/:id', auth, async (req, res) => {
-        try{
-            const novel = await Novel.findById(req.params.id)
+    app.get("/profile/novels/:id", auth, async (req, res) => {
+        try {
+            const novel = await Novel.findById(req.params.id);
+
             await novel.populate("chapters").execPopulate();
-            res.send(
-                {
-                    novel:{
-                        ...novel._doc,
-                        chapters: novel.chapters
-                    }
+            res.send({
+                novel: {
+                    ...novel._doc,
+                    chapters: novel.chapters
                 }
-            )
-        }catch(err){
+            });
+        } catch (err) {}
+    });
 
+    app.post("/profile/novels/:id", auth, async (req, res) => {
+        try {
+            const novel = await Novel.findByIdAndUpdate(req.params.id, {
+                dateUpdated: Date.now()
+            });
+
+            await novel.populate("chapters").execPopulate();
+
+            const chapterNo = novel.chapters.length + 1;
+
+            const chapter = new Chapter({
+                ...req.body,
+                novel: req.params.id,
+                no: chapterNo,
+                dateCreated: Date.now()
+            });
+
+            await chapter.save();
+            res.status(201).send(chapter);
+        } catch (err) {
+            res.status(400).send(err);
         }
-    })
-
-    app.post('/profile/novels/:id', auth, async (req,res) => {
-
-        const novel = await Novel.findById(req.params.id)
-        await novel.populate("chapters").execPopulate();
-
-        const chapterNo = novel.chapters.length + 1
-
-        const chapter = new Chapter({
-            ...req.body,
-            novel: req.params.id,
-            no: chapterNo
-        })
-
-        try{
-            await chapter.save()
-            res.status(201).send(chapter)
-        }catch(err){
-            res.status(400).send(err)
-        }
-    })
+    });
 };
