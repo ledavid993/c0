@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const novelSchema = new Schema({
     title: {
+        unique: true,
         type: String,
         required: true
     },
@@ -15,6 +16,7 @@ const novelSchema = new Schema({
     dislikes: { type: Number, default: 0 },
     dateCreated: Date,
     dateUpdated: Date,
+    authorName: String,
     author: {
         type: Schema.Types.ObjectId,
         required: true,

@@ -10,6 +10,7 @@ module.exports = app => {
     app.post("/profile/novels", auth, async (req, res) => {
         const novel = new Novel({
             ...req.body,
+            authorName: req.user.username,
             author: req.user._id,
             dateCreated: Date.now(),
             dateUpdated: Date.now()
