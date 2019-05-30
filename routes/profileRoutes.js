@@ -38,12 +38,7 @@ module.exports = app => {
             const novel = await Novel.findById(req.params.id);
 
             await novel.populate("chapters").execPopulate();
-            res.send({
-                novel: {
-                    ...novel._doc,
-                    chapters: novel.chapters
-                }
-            });
+            res.send(novel.chapters);
         } catch (err) {}
     });
 

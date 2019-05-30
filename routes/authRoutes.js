@@ -38,7 +38,7 @@ module.exports = app => {
                 return tokens.token !== req.token;
             });
             await req.user.save();
-            res.send();
+            res.status(204).send(req.user);
         } catch (err) {
             res.status(500).send();
         }
