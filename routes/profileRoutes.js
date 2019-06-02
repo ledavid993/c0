@@ -65,4 +65,23 @@ module.exports = app => {
             res.status(400).send(err);
         }
     });
+
+    app.patch("/profile/novels/:id/:no"),
+        auth,
+        async (req, res) => {
+            try {
+                const novel = await Novel.findById(req.params.id);
+
+                await Chapter.findOneAndUpdate(
+                    { novel: novel, no: req.params.no },
+                    {
+                        passage: req.body.passage
+                    }
+                );
+
+                res.status(200).send();
+            } catch (err) {
+                res.status(400).send(err);
+            }
+        };
 };
